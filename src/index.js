@@ -82,7 +82,7 @@ class Game extends React.Component {
   jumpTo(step) {
     this.setState({
       stepNumber: step,
-      isNext: (step % 2)  === 0
+      xIsNext: (step % 2) === 0
     })
   }
 
@@ -92,9 +92,15 @@ class Game extends React.Component {
     const winner = calculateWinner(current.squares);
 
     const moves = history.map((step, move) => {
-      const desc = move ?
-        'Go to move #' + move :
-        'Go to game start';
+      let desc;
+      if (move > 0) {
+        const diff = step.squares.reduce((previous, current, currentIndex) => previous = current !== history[move - 1].squares[currentIndex] ? currentIndex : previous, 0)
+        const location = '(' + String(Math.floor((diff) / 3 + 1)) + ', ' + String(Math.floor((diff) % 3 + 1)) + ')'
+        desc = 'Go to move #' + move + '(row, col) = ' + location
+      } else {
+        desc = 'Go to game start';
+
+      }
       return (
         <li key={move}>
           <button onClick={() => this.jumpTo(move)}>{desc}</button>
