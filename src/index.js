@@ -119,12 +119,16 @@ class Game extends React.Component {
     const winnerInfo = calculateWinner(current.squares);
     let status;
     if (winnerInfo) {
-      status = "Winner:" + winnerInfo.winner;
-    } else {
+      if (winnerInfo.winner) {
+        status = 'Winner:' + winnerInfo.winner;
+      } else if (winnerInfo.draw) {
+        status = 'Draw';
+      }
+    } else{
       status = 'Next player:' + (this.state.xIsNext ? 'X' : 'O');      
     }
 
-    const toggleButton = (
+    const toggleOrder = (
       <button
         onClick={() => this.setState({ascendingMoves: !this.state.ascendingMoves})}
       >
@@ -143,7 +147,7 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div>{status}</div>
-          <div>{toggleButton}</div>
+          <div>{toggleOrder}</div>
           <ol>{moves}</ol>
         </div>
       </div>
@@ -172,8 +176,9 @@ function calculateWinner(squares) {
   for (let i = 0; i < lines.length; i++) {
     const [a, b, c] = lines[i];
     if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return { winner: squares[a], line: lines[i] };
+      return {winner: squares[a], line: lines[i]};
     }
   }
+  if (!squares.some(square => square === null)) return {draw: true};
   return null;
 }
